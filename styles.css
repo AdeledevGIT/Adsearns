@@ -224,12 +224,14 @@ body {
 .banner-card {
     background-color: #000000;
     border-radius: 15px;
-    width: 320px;
-    height: 200px;
+    width: 100%;
+    max-width: 414px; /* fits most phones */
+    aspect-ratio: 320 / 100;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
+    padding: 0;
 }
 
 .banner-text {
