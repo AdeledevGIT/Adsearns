@@ -225,6 +225,7 @@ body {
     background-color: #000000;
     border-radius: 15px;
     width: 100%;
+    max-width: 414px; /* fits most phones */
     aspect-ratio: 320 / 100;
     display: flex;
     justify-content: center;
@@ -373,6 +374,11 @@ body {
         font-size: 28px;
     }
     
+    /* Keep banner mobile-sized on all screens */
+    .banner-card {
+        max-width: 414px; /* Maintain mobile banner size */
+    }
+    
     .action-icon {
         width: 40px;
         height: 40px;
@@ -432,6 +438,11 @@ body {
     
     .banner-text {
         font-size: 32px;
+    }
+    
+    /* Keep banner mobile-sized on all screens */
+    .banner-card {
+        max-width: 414px; /* Maintain mobile banner size */
     }
     
     .action-icon {
@@ -497,6 +508,11 @@ body {
     
     .banner-text {
         font-size: 36px;
+    }
+    
+    /* Keep banner mobile-sized on all screens */
+    .banner-card {
+        max-width: 414px; /* Maintain mobile banner size */
     }
     
     .action-icon {
