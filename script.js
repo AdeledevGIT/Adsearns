@@ -41,14 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add click event listener to banner card
-    const bannerCard = document.querySelector('.banner-card');
-    if (bannerCard) {
-        bannerCard.addEventListener('click', function() {
-            console.log('ShowBanner ads clicked');
+    // Add click event listeners to banner cards
+    const bannerCards = document.querySelectorAll('.banner-card');
+    bannerCards.forEach((card, idx) => {
+        card.addEventListener('click', function() {
+            console.log(`ShowBanner ads ${idx + 1} clicked`);
             // Add your banner logic here
         });
-    }
+    });
 
     // Add click event listener to balance card
     const balanceCard = document.querySelector('.balance-card');
@@ -92,6 +92,55 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.transform = 'scale(1)';
             });
         });
+    }
+
+    // Auto-rotating banner carousel (horizontal, overflow hidden)
+    const carousel = document.querySelector('.banner-carousel');
+    if (carousel) {
+        const track = carousel.querySelector('.banner-track');
+        const slides = carousel.querySelectorAll('.banner-card');
+        let index = 0;
+
+        function applySlideWidth() {
+            const gap = 12; // must match CSS .banner-track gap
+            const viewport = carousel.clientWidth;
+            const totalGapFor3 = gap * 2;
+            // If we can fit all three fully with gaps, do so
+            if (viewport >= (3 * 300 + totalGapFor3)) {
+                // Show all 3 fully (300px each default height baseline) – use equal thirds
+                const slideWidth = (viewport - totalGapFor3) / 3;
+                slides.forEach(s => s.style.setProperty('--slide-width', `${slideWidth}px`));
+            } else {
+                // Show peeking neighbors around a centered slide (~80% viewport)
+                const slideWidth = Math.max(220, Math.min(0.8 * viewport, viewport - 60));
+                slides.forEach(s => s.style.setProperty('--slide-width', `${slideWidth}px`));
+            }
+        }
+
+        function updatePosition() {
+            const slide = slides[0];
+            const slideWidth = slide.getBoundingClientRect().width;
+            const gap = 12; // must match CSS .banner-track gap
+            const viewport = carousel.clientWidth;
+            // Center the active slide so neighbors peek
+            const offset = index * (slideWidth + gap);
+            const centerShift = (viewport - slideWidth) / 2;
+            track.style.transform = `translateX(${centerShift - offset}px)`;
+        }
+
+        const intervalMs = 3000; // 3 seconds
+        const timer = setInterval(() => {
+            index = (index + 1) % slides.length;
+            updatePosition();
+        }, intervalMs);
+
+        window.addEventListener('resize', () => {
+            applySlideWidth();
+            updatePosition();
+        });
+
+        applySlideWidth();
+        updatePosition();
     }
 
     console.log('ADSEARNS Dashboard loaded successfully!');
