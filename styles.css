@@ -226,7 +226,7 @@ body {
     border-radius: 15px;
     width: 100%;
     max-width: 414px; /* fits most phones */
-    aspect-ratio: 320 / 100;
+    aspect-ratio: 180 / 150;
     display: flex;
     justify-content: center;
     align-items: center;
