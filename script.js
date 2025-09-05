@@ -1,6 +1,50 @@
+(function(){
+  const KEY='adsearns_theme';
+  const root=document.documentElement;
+  const mq=window.matchMedia('(prefers-color-scheme: dark)');
+  function compute(mode){ return mode==='system' ? (mq.matches ? 'dark' : 'light') : mode; }
+  function setThemeAttr(theme){ root.setAttribute('data-theme', theme); }
+  function apply(mode){
+    try { localStorage.setItem(KEY, mode); } catch(e) {}
+    const eff=compute(mode);
+    setThemeAttr(eff);
+  }
+  // initial apply as early as possible to minimize FOUC
+  try {
+    const saved=(localStorage.getItem(KEY) || 'system');
+    setThemeAttr(compute(saved));
+  } catch(e) {}
+  function setActive(mode){
+    try {
+      document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+      const el=document.getElementById('mode-'+mode);
+      if(el) el.classList.add('active');
+    } catch(e) {}
+  }
+  function initButtons(){
+    const saved = (localStorage.getItem(KEY) || 'system');
+    setActive(saved);
+    ['light','dark','system'].forEach(m=>{
+      const btn=document.getElementById('mode-'+m);
+      if(btn && !btn.__themeInit){
+        btn.__themeInit=true;
+        btn.addEventListener('click', ()=>{ apply(m); setActive(m); });
+      }
+    });
+    const onSystemChange = () => {
+      const cur=(localStorage.getItem(KEY) || 'system');
+      if(cur==='system') setThemeAttr(compute('system'));
+    };
+    if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
+    else if (mq.addListener) mq.addListener(onSystemChange);
+  }
+  window.AdsearnsTheme = { apply, initButtons, get: ()=> (localStorage.getItem(KEY)||'system') };
+})();
+
 // ADSEARNS Dashboard JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
+    if (window.AdsearnsTheme && typeof window.AdsearnsTheme.initButtons === 'function') { window.AdsearnsTheme.initButtons(); }
     
     // Add click event listeners to action buttons
     const actionButtons = document.querySelectorAll('.action-btn');

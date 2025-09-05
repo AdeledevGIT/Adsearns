@@ -690,3 +690,52 @@ body {
         font-size: 13px;
     }
 }
+
+/* Light Theme (global) */
+html[data-theme='light'] body { background:#f7f7f7 !important; color:#111 !important; }
+
+/* Global surfaces */
+html[data-theme='light'] .header,
+html[data-theme='light'] .bottom-nav { background:#ffffff !important; }
+
+/* Balance card and text */
+html[data-theme='light'] .balance-card { background:#ffffff !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important, 0 0 0 1px rgba(0,0,0,0.06) !important; }
+html[data-theme='light'] .balance-label { color:#333 !important; }
+html[data-theme='light'] .balance-amount { color:#111 !important; }
+html[data-theme='light'] .name-label { color:#555 !important; }
+html[data-theme='light'] .full-name { color:#111 !important; }
+html[data-theme='light'] .account-number { color:#444 !important; }
+
+/* Action buttons block */
+html[data-theme='light'] .action-buttons { background:#ffffff !important; border-color: rgba(0,0,0,0.1) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }
+html[data-theme='light'] .action-btn { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; }
+html[data-theme='light'] .action-btn:hover { background: rgba(0,0,0,0.08) !important; }
+html[data-theme='light'] .action-label { color:#111 !important; }
+
+/* Side features */
+html[data-theme='light'] .side-feature { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; }
+html[data-theme='light'] .feature-label { color:#111 !important; }
+
+/* Banners */
+html[data-theme='light'] .banner-card { background:#ffffff !important; }
+html[data-theme='light'] .banner-text { color:#111 !important; }
+
+/* Bottom nav text */
+html[data-theme='light'] .nav-label { color:#111 !important; }
+
+/* Cards, lists, buttons (profile/withdraw) */
+html[data-theme='light'] .card { background:#ffffff !important; color:#111 !important; border:1px solid rgba(0,0,0,0.12) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }
+html[data-theme='light'] .list-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
+html[data-theme='light'] .list-item .icon { color:#111 !important; }
+html[data-theme='light'] .btn { background: rgba(0,0,0,0.06) !important; border-color: rgba(0,0,0,0.12) !important; color:#111 !important; }
+
+/* Forms (profile) */
+html[data-theme='light'] .info-field label { color:#111 !important; opacity:0.9 !important; }
+html[data-theme='light'] .info-field input { background:#ffffff !important; color:#111 !important; border:1px solid rgba(0,0,0,0.12) !important; }
+html[data-theme='light'] .info-field input::placeholder { color: rgba(0,0,0,0.5) !important; }
+
+/* Withdraw page extras */
+html[data-theme='light'] .modal-content { background:#ffffff !important; border-color: rgba(0,0,0,0.1) !important; }
+html[data-theme='light'] .modal-body .card.sub { background: rgba(0,0,0,0.04) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
+html[data-theme='light'] .history-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
+html[data-theme='light'] .bank-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }

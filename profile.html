@@ -54,6 +54,20 @@
         .list-item .label { font-size: 12px; font-weight: 600; letter-spacing: .3px; text-transform: capitalize; }
         .list-item .icon { color: rgba(255,255,255,0.8); }
 
+        /* Screen mode toggle */
+        .mode-options { display:flex; gap:8px; align-items:center; }
+        .mode-btn { display:inline-flex; align-items:center; justify-content:center; padding:8px 12px; border-radius:16px; border:1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); color:#fff; font-weight:700; font-size:12px; cursor:pointer; }
+        .mode-btn.active { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); box-shadow: 0 6px 18px rgba(76,175,80,0.35); border-color: transparent; }
+
+        /* Light theme overrides (profile scope) */
+        html[data-theme='light'] body { background:#f7f7f7 !important; color:#111 !important; }
+        html[data-theme='light'] .header, html[data-theme='light'] .bottom-nav { background:#ffffff !important; }
+        html[data-theme='light'] .card { background:#ffffff !important; color:#111 !important; border:1px solid rgba(0,0,0,0.12) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important; }
+        html[data-theme='light'] .list-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
+        html[data-theme='light'] .nav-label, html[data-theme='light'] .section-title, html[data-theme='light'] .page-tag { color:#111 !important; }
+        html[data-theme='light'] .profile-balance { color:#111 !important; }
+        html[data-theme='light'] .mode-btn { background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.12); color:#111; }
+
         @media (min-width: 768px) {
             .profile-avatar { width: 110px; height: 110px; }
             .stat-number { font-size: 20px; }
@@ -95,20 +109,20 @@
                 </div>
                 <div class="stat">
                     <div class="stat-number">20</div>
-                    <div class="stat-label">Referred</div>
+                    <div class="stat-label">Direct link clicked</div>
                 </div>
 
                 <div class="stat">
-                    <div class="stat-number">12,500</div>
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">Referred</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">50,000</div>
                     <div class="stat-label">Earned</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number">5,000</div>
+                    <div class="stat-number">25,000</div>
                     <div class="stat-label">Withdrawn</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number">7,500</div>
-                    <div class="stat-label">Balance</div>
                 </div>
             </div>
         </div>
@@ -140,6 +154,14 @@
         <div class="card actions-card">
             <h3 class="section-title">Quick actions</h3>
             <div class="list">
+                <div class="list-item" id="screen-mode-item">
+                    <span class="label">Screen mode</span>
+                    <div class="mode-options">
+                        <button type="button" class="mode-btn" id="mode-light">Light</button>
+                        <button type="button" class="mode-btn" id="mode-dark">Dark</button>
+                        <button type="button" class="mode-btn" id="mode-system">System</button>
+                    </div>
+                </div>
                 <a class="list-item" href="#"><span class="label">Invite friends</span><i class="fas fa-chevron-right icon"></i></a>
                 <a class="list-item" href="#"><span class="label">Privacy policy</span><i class="fas fa-chevron-right icon"></i></a>
                 <a class="list-item" href="#"><span class="label">Terms & condition</span><i class="fas fa-chevron-right icon"></i></a>
@@ -179,5 +201,40 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+    (function(){
+      const KEY='adsearns_theme';
+      const root=document.documentElement;
+      const mq=window.matchMedia('(prefers-color-scheme: dark)');
+
+      function compute(mode){ return mode==='system' ? (mq.matches ? 'dark' : 'light') : mode; }
+      function setThemeAttr(theme){ root.setAttribute('data-theme', theme); }
+      function setActive(mode){
+        document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+        const el=document.getElementById('mode-'+mode);
+        el && el.classList.add('active');
+      }
+      function apply(mode){
+        const eff=compute(mode);
+        setThemeAttr(eff);
+        setActive(mode);
+      }
+      function onSystemChange(){
+        const saved=localStorage.getItem(KEY)||'system';
+        if(saved==='system') apply('system');
+      }
+
+      ['light','dark','system'].forEach(m=>{
+        const btn=document.getElementById('mode-'+m);
+        if(btn){ btn.addEventListener('click', ()=>{ localStorage.setItem(KEY, m); apply(m); }); }
+      });
+
+      if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
+      else if (mq.addListener) mq.addListener(onSystemChange);
+
+      const saved=localStorage.getItem(KEY) || 'system';
+      apply(saved);
+    })();
+    </script>
 </body>
 </html>
