@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADSEARNS - Friends</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* Local page styles to align with other pages (dark base; light overrides are global) */
+    .card { background-color: #000000; color: #ed8e1c; border-radius: 15px; width: 90%; margin: 10px auto; padding: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
+    .page-tag { margin-left: 8px; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; opacity: .9; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; text-decoration: none; font-weight: 600; font-size: 12px; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+    .hint { font-size: 11px; opacity: .8; }
+
+    .referral-row { display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .code-box { display:flex; align-items:center; gap:8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 12px; color:#fff; }
+    .code-box code { font-weight: 800; letter-spacing: .6px; }
+    .ref-meta { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
+    .ref-count { font-size: 12px; font-weight: 700; }
+
+    .list { display:flex; flex-direction: column; }
+    .list-item { display:flex; align-items:center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin: 4px 6px; border-radius: 12px; text-decoration: none; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+    .list-item .left { display:flex; flex-direction: column; gap: 4px; }
+    .list-item .title { font-size: 12px; font-weight: 700; }
+    .list-item .sub { font-size: 11px; opacity: .85; }
+    .list-item .right { display:flex; align-items:center; gap: 10px; }
+    .badge { display:inline-block; padding: 6px 8px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); font-size: 11px; font-weight: 700; }
+
+    @media (min-width: 768px) {
+      .code-box { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="profile-section">
+        <span class="page-tag">Friends</span>
+      </div>
+      <button class="switch-btn">Switch to advertise</button>
+    </header>
+
+    <!-- Referral Section -->
+    <div class="card">
+      <h3 class="section-title">Referral</h3>
+      <div class="referral-row">
+        <div class="code-box">
+          <span>Your code:</span>
+          <code id="ref-code">ADS-XXXXXX</code>
+        </div>
+        <div class="ref-meta">
+          <span class="ref-count">Referrals: <span id="ref-count">0</span></span>
+          <button id="copy-code" class="btn"><i class="fas fa-copy"></i> Copy</button>
+          <button id="share-code" class="btn"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
+      </div>
+      <div class="hint" style="margin-top:8px;">Share your referral code with friends to earn rewards.</div>
+    </div>
+
+    <!-- Rules Section -->
+    <div class="card">
+      <h3 class="section-title">Referral rules</h3>
+      <div class="list">
+        <div class="list-item"><span class="title">Share your referral code with friends</span></div>
+        <div class="list-item"><span class="title">After they signup with it, they must earn 500 Adspoints for you to claim your referral reward</span></div>
+        <div class="list-item"><span class="title">Rewards must be claimed manually from the friends list below</span></div>
+        <div class="list-item"><span class="title">Referral reward can only be claimed once, and the referral count is added only after the reward is claimed</span></div>
+      </div>
+    </div>
+
+    <!-- Friends List -->
+    <div class="card">
+      <h3 class="section-title">Friends</h3>
+      <div id="friends-list" class="list"></div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <span class="nav-label">Profile</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <span class="nav-label">Withdraw</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-users"></i></div>
+        <span class="nav-label">Friends</span>
+      </div>
+    </nav>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    (function initFriendsPage(){
+      const CODE_KEY = 'adsearns_ref_code';
+      const FRIENDS_KEY = 'adsearns_friends';
+
+      const refCodeEl = document.getElementById('ref-code');
+      const refCountEl = document.getElementById('ref-count');
+      const copyBtn = document.getElementById('copy-code');
+      const shareBtn = document.getElementById('share-code');
+      const listEl = document.getElementById('friends-list');
+
+      function loadCode(){
+        try {
+          let code = localStorage.getItem(CODE_KEY);
+          if (!code) {
+            const rnd = Math.floor(Math.random() * 1e6).toString().padStart(6,'0');
+            code = 'ADS-' + rnd;
+            localStorage.setItem(CODE_KEY, code);
+          }
+          return code;
+        } catch { return 'ADS-000000'; }
+      }
+
+      function loadFriends(){
+        try { return JSON.parse(localStorage.getItem(FRIENDS_KEY)) || []; }
+        catch { return []; }
+      }
+      function saveFriends(arr){ localStorage.setItem(FRIENDS_KEY, JSON.stringify(arr)); }
+
+      function seedIfEmpty(){
+        const cur = loadFriends();
+        if (cur.length) return;
+        const now = Date.now();
+        const sample = [
+          { username: 'kayode', joinedAt: now - 86400000*5, pointsEarned: 620, claimed: false },
+          { username: 'mariam', joinedAt: now - 86400000*2, pointsEarned: 340, claimed: false },
+          { username: 'tobi', joinedAt: now - 86400000*10, pointsEarned: 1200, claimed: true },
+        ];
+        saveFriends(sample);
+      }
+
+      function formatDate(ts){ return new Date(ts).toLocaleDateString(); }
+
+      function computeReferralCount(arr){ return arr.filter(f => f.claimed).length; }
+
+      function render(){
+        const friends = loadFriends();
+        listEl.innerHTML = '';
+        if (!friends.length){
+          const empty = document.createElement('div');
+          empty.className = 'hint';
+          empty.textContent = 'No friends yet. Share your referral code to invite friends.';
+          listEl.appendChild(empty);
+        } else {
+          friends.forEach((f, idx) => {
+            const row = document.createElement('div');
+            row.className = 'list-item';
+            const claimable = f.pointsEarned >= 500 && !f.claimed;
+            row.innerHTML = `
+              <div class="left">
+                <div class="title">@${f.username}</div>
+                <div class="sub">Joined ${formatDate(f.joinedAt)}</div>
+              </div>
+              <div class="right">
+                <span class="badge">${f.pointsEarned.toLocaleString()} pts</span>
+                ${f.claimed ? '<span class="badge">Claimed</span>' : `<button class="btn claim-btn" ${claimable ? '' : 'disabled'}>${claimable ? 'Claim reward' : 'Pending'}</button>`}
+              </div>
+            `;
+            if (!f.claimed){
+              const btn = row.querySelector('.claim-btn');
+              if (btn){
+                btn.addEventListener('click', () => {
+                  const arr = loadFriends();
+                  const it = arr[idx];
+                  if (!it || it.claimed) return;
+                  if (it.pointsEarned < 500){ alert('Referral must earn at least 500 Adspoints before you can claim.'); return; }
+                  it.claimed = true;
+                  saveFriends(arr);
+                  render();
+                });
+              }
+            }
+            listEl.appendChild(row);
+          });
+        }
+        refCountEl.textContent = computeReferralCount(friends);
+      }
+
+      const code = loadCode();
+      refCodeEl.textContent = code;
+
+      copyBtn && copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(code).then(()=> alert('Referral code copied')).catch(()=> alert('Copy failed'));
+      });
+
+      shareBtn && shareBtn.addEventListener('click', async () => {
+        const text = `Join me on ADSEARNS. Use my referral code: ${code}`;
+        if (navigator.share){
+          try { await navigator.share({ title: 'ADSEARNS Referral', text }); }
+          catch {}
+        } else {
+          try { await navigator.clipboard.writeText(text); alert('Referral message copied'); }
+          catch { alert('Share not supported'); }
+        }
+      });
+
+      seedIfEmpty();
+      render();
+    })();
+  </script>
+</body>
+</html>

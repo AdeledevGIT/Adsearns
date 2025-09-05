@@ -101,8 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (navAction === 'withdraw') {
                 window.location.href = 'withdraw.html';
             } else if (navAction === 'friends') {
-                // Placeholder for future page
-                alert('Friends page coming soon');
+                window.location.href = 'friends.html';
             }
         });
     });
