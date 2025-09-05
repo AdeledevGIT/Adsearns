@@ -6,8 +6,8 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #b9b9b9;
-    color: white;
+    background-color: #ed8e1c;
+    color: rgb(255, 255, 255);
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
