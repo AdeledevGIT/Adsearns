@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* Profile page add-ons keeping the same tone */
-        .profile-avatar-wrapper { display: flex; justify-content: center; margin-top: 6px; }
+        .profile-avatar-wrapper { display: flex; justify-content: flex-end; margin-top: 6px; }
         .profile-avatar {
             width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
             border: 3px solid rgba(255,255,255,0.15);
@@ -24,6 +24,13 @@
         }
         .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
         .page-tag { margin-left: 8px; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; opacity: .9; }
+
+        /* Profile summary row: balance (left) + avatar (right), no card */
+        .profile-summary { width: 90%; margin: 6px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .profile-balance { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; color: #fff; }
+        .profile-balance .label { font-size: 12px; font-weight: 600; opacity: .9; text-transform: uppercase; letter-spacing: .5px; }
+        .profile-balance .primary-amount { font-size: 28px; font-weight: 800; line-height: 1; }
+        .profile-balance .converted-amount { font-size: 12px; opacity: .85; }
 
         /* Stats */
         .stats-card { padding: 16px 12px; }
@@ -63,9 +70,16 @@
             <button class="switch-btn">Switch to advertise</button>
         </header>
 
-        <!-- Profile Avatar -->
-        <div class="profile-avatar-wrapper">
-            <img class="profile-avatar" src="https://via.placeholder.com/96x96/000000/FFFFFF?text=U" alt="Profile picture" />
+        <!-- Profile Summary: balance left, avatar right -->
+        <div class="profile-summary">
+            <div class="profile-balance">
+                <div class="label">Adspoint balance</div>
+                <div class="primary-amount">50,000</div>
+                <div class="converted-amount">≈ ₦25,000</div>
+            </div>
+            <div class="profile-avatar-wrapper">
+                <img class="profile-avatar" src="https://via.placeholder.com/96x96/000000/FFFFFF?text=U" alt="Profile picture" />
+            </div>
         </div>
 
         <!-- Stats -->
