@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADSEARNS - Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Profile page add-ons keeping the same tone */
+        .profile-avatar-wrapper { display: flex; justify-content: center; margin-top: 6px; }
+        .profile-avatar {
+            width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+            background: #000;
+        }
+        .card {
+            background-color: #000000; color: #fff; border-radius: 15px; width: 90%; margin: 10px auto; padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+        }
+        .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
+
+        /* Stats */
+        .stats-card { padding: 16px 12px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; text-align: center; }
+        .stat-number { font-size: 18px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+        .stat-label { font-size: 10px; font-weight: 600; opacity: .85; text-transform: uppercase; letter-spacing: .4px; }
+
+        /* Info form */
+        .info-card { padding: 16px; }
+        .info-form { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .info-field label { font-size: 12px; opacity: .85; display: block; margin-bottom: 6px; }
+        .info-field input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: #fff; outline: none; }
+        .info-field input::placeholder { color: rgba(255,255,255,0.6); }
+
+        /* Actions */
+        .actions-card { padding: 8px; }
+        .list { display: flex; flex-direction: column; }
+        .list-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin: 4px 6px; border-radius: 12px; text-decoration: none; color: #fff; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        .list-item:hover { background: rgba(255,255,255,0.08); }
+        .list-item .label { font-size: 12px; font-weight: 600; letter-spacing: .3px; text-transform: capitalize; }
+        .list-item .icon { color: rgba(255,255,255,0.8); }
+
+        @media (min-width: 768px) {
+            .profile-avatar { width: 110px; height: 110px; }
+            .stat-number { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="profile-section">
+                <img src="https://via.placeholder.com/40x40/FF6B35/FFFFFF?text=U" alt="Profile" class="profile-pic">
+                <span class="username">Adeyemi</span>
+            </div>
+            <button class="switch-btn">Switch to advertise</button>
+        </header>
+
+        <!-- Profile Avatar -->
+        <div class="profile-avatar-wrapper">
+            <img class="profile-avatar" src="https://via.placeholder.com/96x96/000000/FFFFFF?text=U" alt="Profile picture" />
+        </div>
+
+        <!-- Stats -->
+        <div class="card stats-card">
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-number">120</div>
+                    <div class="stat-label">Ad watched</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">Tasks complete</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">Referred</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-number">12,500</div>
+                    <div class="stat-label">Earned</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">5,000</div>
+                    <div class="stat-label">Withdrawn</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">7,500</div>
+                    <div class="stat-label">Balance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="card info-card">
+            <h3 class="section-title">Personal info</h3>
+            <form class="info-form" action="#" method="post" onsubmit="return false;">
+                <div class="info-field">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" value="adeyemi" />
+                </div>
+                <div class="info-field">
+                    <label for="fullname">Full name</label>
+                    <input id="fullname" type="text" value="adeyemi adele" />
+                </div>
+                <div class="info-field">
+                    <label for="email">Email address</label>
+                    <input id="email" type="email" value="adeyemi3@gmai.com" />
+                </div>
+                <div class="info-field">
+                    <label for="phone">Phone number</label>
+                    <input id="phone" type="tel" value="8146129606" />
+                </div>
+            </form>
+        </div>
+
+        <!-- More / Settings -->
+        <div class="card actions-card">
+            <h3 class="section-title">Quick actions</h3>
+            <div class="list">
+                <a class="list-item" href="#"><span class="label">Invite friends</span><i class="fas fa-chevron-right icon"></i></a>
+                <a class="list-item" href="#"><span class="label">Privacy policy</span><i class="fas fa-chevron-right icon"></i></a>
+                <a class="list-item" href="#"><span class="label">Terms & condition</span><i class="fas fa-chevron-right icon"></i></a>
+                <a class="list-item" href="#"><span class="label">FAQ</span><i class="fas fa-chevron-right icon"></i></a>
+                <a class="list-item" href="#"><span class="label">Contact support</span><i class="fas fa-chevron-right icon"></i></a>
+                <a class="list-item" href="#"><span class="label">About</span><i class="fas fa-chevron-right icon"></i></a>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item active">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="nav-label">Profile</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <span class="nav-label">Withdraw</span>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="nav-label">Friends</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

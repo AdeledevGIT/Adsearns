@@ -16,9 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', function() {
-            const navAction = this.querySelector('.nav-label').textContent;
+            const navAction = this.querySelector('.nav-label').textContent.trim().toLowerCase();
             console.log(`Navigation clicked: ${navAction}`);
-            // Add your navigation logic here
+            if (navAction === 'home') {
+                window.location.href = 'index.html';
+            } else if (navAction === 'profile') {
+                window.location.href = 'profile.html';
+            } else if (navAction === 'withdraw') {
+                // Placeholder for future page
+                alert('Withdraw page coming soon');
+            } else if (navAction === 'friends') {
+                // Placeholder for future page
+                alert('Friends page coming soon');
+            }
         });
     });
 
