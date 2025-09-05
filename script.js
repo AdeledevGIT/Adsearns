@@ -4,15 +4,28 @@
   const mq=window.matchMedia('(prefers-color-scheme: dark)');
   function compute(mode){ return mode==='system' ? (mq.matches ? 'dark' : 'light') : mode; }
   function setThemeAttr(theme){ root.setAttribute('data-theme', theme); }
+  function setManifest(theme){
+    try {
+      const link = document.querySelector("link[rel='manifest']");
+      if (!link) return;
+      const isLight = theme === 'light';
+      const href = isLight ? 'manifest-light.json' : 'manifest.json';
+      if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+    } catch(e) {}
+  }
   function apply(mode){
     try { localStorage.setItem(KEY, mode); } catch(e) {}
     const eff=compute(mode);
     setThemeAttr(eff);
+    setManifest(eff);
   }
   // initial apply as early as possible to minimize FOUC
   try {
     const saved=(localStorage.getItem(KEY) || 'system');
-    setThemeAttr(compute(saved));
+    const eff=compute(saved);
+    setThemeAttr(eff);
+    // defer manifest swap until DOM is ready if link may not be present yet
+    document.addEventListener('DOMContentLoaded', ()=> setManifest(eff));
   } catch(e) {}
   function setActive(mode){
     try {
@@ -33,7 +46,11 @@
     });
     const onSystemChange = () => {
       const cur=(localStorage.getItem(KEY) || 'system');
-      if(cur==='system') setThemeAttr(compute('system'));
+      if(cur==='system') {
+        const eff=compute('system');
+        setThemeAttr(eff);
+        setManifest(eff);
+      }
     };
     if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
     else if (mq.addListener) mq.addListener(onSystemChange);
