@@ -143,5 +143,27 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePosition();
     }
 
+    // Align the small account number with the full name's vertical position
+    function positionAccountNumber() {
+        const card = document.querySelector('.balance-card');
+        if (!card) return;
+        const fullName = card.querySelector('.full-name');
+        const acct = card.querySelector('.account-number');
+        if (!fullName || !acct) return;
+        // Make it really small and keep in one line
+        acct.style.fontSize = '9px';
+        acct.style.whiteSpace = 'nowrap';
+        // Compute vertical alignment to match full name
+        const cardRect = card.getBoundingClientRect();
+        const fullNameRect = fullName.getBoundingClientRect();
+        const acctRect = acct.getBoundingClientRect();
+        const top = fullNameRect.top - cardRect.top + (fullNameRect.height - acctRect.height) / 2;
+        acct.style.top = `${Math.max(0, Math.round(top))}px`;
+    }
+
+    positionAccountNumber();
+    window.addEventListener('resize', positionAccountNumber);
+    window.addEventListener('load', positionAccountNumber);
+
     console.log('ADSEARNS Dashboard loaded successfully!');
 });
