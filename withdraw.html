@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADSEARNS - Withdraw</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    /* Withdraw page add-ons keeping the same tone */
+    .page-title { width: 90%; margin: 4px auto 0; color: #fff; font-weight: 700; letter-spacing: .4px; }
+    .card { background-color: #000000; color: #ed8e1c; border-radius: 15px; width: 90%; margin: 10px auto; padding: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
+    /* Compact page label next to username */
+    .page-tag { margin-left: 8px; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #ffffffe8; opacity: .9; }
+
+    /* Balance summary (left with referral right) */
+    .balance-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .single-balance { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .single-balance .label { font-size: 12px; font-weight: 600; opacity: .9; text-transform: uppercase; letter-spacing: .5px; }
+    .single-balance .primary-amount { font-size: 28px; font-weight: 800; line-height: 1; }
+    .single-balance .converted-amount { font-size: 12px; opacity: .85; }
+    .referral-box { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 6px; }
+    .referral-box .label { font-size: 12px; font-weight: 600; opacity: .9; text-transform: uppercase; letter-spacing: .5px; }
+    .referral-box .value { font-size: 22px; font-weight: 800; line-height: 1; }
+
+    /* Bank manager */
+    .bank-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; text-decoration: none; font-weight: 600; font-size: 12px; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .bank-list { display: flex; flex-direction: column; gap: 8px; }
+    .bank-item { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+    .bank-meta { display: flex; flex-direction: column; }
+    .bank-name { font-size: 12px; font-weight: 700; }
+    .bank-number { font-size: 11px; opacity: .85; }
+    .bank-remove { background: rgba(244,67,54,0.15); border: 1px solid rgba(244,67,54,0.35); }
+
+    .add-bank-form { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); }
+    .field { display: grid; grid-template-columns: 1fr; gap: 6px; margin-bottom: 10px; }
+    .field label { font-size: 12px; opacity: .85; }
+    .field input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: #fff; outline: none; }
+    .form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* Withdraw form */
+    .withdraw-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .hint { font-size: 11px; opacity: .8; }
+    .input-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+    .input-row .field { margin: 0; }
+    .amount-value { font-weight: 700; }
+
+    @media (min-width: 768px) { .summary-value { font-size: 20px; } }
+  </style>
+  <style>
+    /* Withdraw history */
+    .history-card .history-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .history-list { display: flex; flex-direction: column; gap: 8px; }
+    .history-item { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+    .history-item:hover { background: rgba(255,255,255,0.08); }
+    .history-item .meta { display: flex; flex-direction: column; gap: 4px; }
+    .history-item .title { font-size: 12px; font-weight: 700; }
+    .history-item .sub { font-size: 11px; opacity: .85; }
+    .history-item .amount { font-weight: 800; font-size: 13px; }
+
+    /* Modal */
+    .modal.hidden { display: none; }
+    .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2000; }
+    .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+    .modal-content { position: relative; width: 92%; max-width: 540px; max-height: 85vh; overflow: auto; background: #000; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 12px 32px rgba(0,0,0,0.45); padding: 14px; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .modal-body .card.sub { width: 100%; margin: 8px 0; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); box-shadow: none; }
+    .modal-body .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 0; font-size: 12px; }
+    .modal-footer { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+
+    /* Status steps */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .step { text-align: center; padding: 8px 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); font-size: 11px; font-weight: 600; }
+    .step.active { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); box-shadow: 0 6px 18px rgba(76,175,80,0.35); }
+  </style>
+</head>
+<body>
+  <div class="container withdraw-page">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="profile-section">
+        <span class="page-tag">Withdraw</span>
+      </div>
+      <button class="switch-btn">Switch to advertise</button>
+    </header>
+
+    
+    <!-- Balances -->
+    <div class="card">
+      <div class="balance-row">
+        <div class="single-balance">
+          <div class="label">Adspoint balance</div>
+          <div class="primary-amount">50,000</div>
+          <div class="converted-amount">≈ ₦25,000</div>
+        </div>
+        <div class="referral-box">
+          <div class="label">Referral count</div>
+          <div class="value">20/3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank manager -->
+    <div class="card">
+      <div class="bank-header">
+        <h3 class="section-title">Banks</h3>
+        <button id="add-bank-btn" class="btn"><i class="fas fa-plus"></i> Add bank</button>
+      </div>
+      <div id="bank-list" class="bank-list"></div>
+
+      <div id="add-bank-form" class="add-bank-form">
+        <div class="field">
+          <label for="bank-name">Bank name</label>
+          <input id="bank-name" type="text" placeholder="e.g., Access Bank" />
+        </div>
+        <div class="field">
+          <label for="account-name">Account name</label>
+          <input id="account-name" type="text" placeholder="e.g., Adeyemi Adele" />
+        </div>
+        <div class="field">
+          <label for="account-number">Account number</label>
+          <input id="account-number" type="text" placeholder="10-digit account number" />
+        </div>
+        <div class="form-actions">
+          <button id="cancel-add-bank" class="btn">Cancel</button>
+          <button id="save-bank" class="btn"><i class="fas fa-save"></i> Save bank</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Withdraw form -->
+    <div class="card">
+      <h3 class="section-title">Withdraw</h3>
+      <div class="withdraw-grid">
+        <div class="hint">Enter amount in Adspoints. Converted Naira will update automatically.</div>
+        <div class="input-row">
+          <div class="field">
+            <label for="adspoint-input">Amount (Adspoints)</label>
+            <input id="adspoint-input" type="number" min="0" step="1" placeholder="e.g., 1000" />
+          </div>
+          <button id="withdraw-btn" class="btn" disabled>
+            <i class="fas fa-arrow-down"></i> Withdraw
+          </button>
+        </div>
+        <div class="hint">Amount in Naira: <span class="amount-value">₦<span id="naira-value">0</span></span></div>
+      </div>
+    </div>
+
+    <!-- Withdraw history -->
+    <div class="card history-card">
+      <div class="history-header">
+        <h3 class="section-title">Withdraw history</h3>
+        <button id="see-all-history" class="btn">See all</button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </div>
+
+    <!-- Modal: history details -->
+    <div id="history-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-overlay"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="section-title">Withdraw details</h3>
+          <button id="modal-close" class="btn">Close</button>
+        </div>
+        <div class="modal-body">
+          <div class="card sub">
+            <div class="steps">
+              <div class="step" data-step="requested">Withdraw request</div>
+              <div class="step" data-step="submitted">Withdraw submitted</div>
+              <div class="step" data-step="complete">Withdraw complete</div>
+            </div>
+          </div>
+          <div class="card sub">
+            <div class="row"><span>Amount</span><span id="modal-amount-pts"></span></div>
+            <div class="row"><span>Fee</span><span id="modal-fee-pts"></span></div>
+            <div class="row"><span>Total</span><span id="modal-total-pts"></span></div>
+          </div>
+          <div class="card sub">
+            <div class="row"><span>Transaction ID</span><span><span id="modal-txid"></span> <button id="tx-copy" class="btn">Copy</button></span></div>
+            <div class="row"><span>Account</span><span id="modal-account"></span></div>
+            <div class="row"><span>Bank</span><span id="modal-bank"></span></div>
+            <div class="row"><span>Requested at</span><span id="modal-date"></span></div>
+          </div>
+          <div class="modal-footer">
+            <button id="report-issue" class="btn"><i class="fas fa-flag"></i> Report issue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <span class="nav-label">Home</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <span class="nav-label">Profile</span>
+      </div>
+      <div class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <span class="nav-label">Withdraw</span>
+      </div>
+      <div class="nav-item">
+        <div class="nav-icon"><i class="fas fa-users"></i></div>
+        <span class="nav-label">Friends</span>
+      </div>
+    </nav>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

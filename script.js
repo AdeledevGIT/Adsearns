@@ -23,8 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (navAction === 'profile') {
                 window.location.href = 'profile.html';
             } else if (navAction === 'withdraw') {
-                // Placeholder for future page
-                alert('Withdraw page coming soon');
+                window.location.href = 'withdraw.html';
             } else if (navAction === 'friends') {
                 // Placeholder for future page
                 alert('Friends page coming soon');
@@ -174,6 +173,247 @@ document.addEventListener('DOMContentLoaded', function() {
     positionAccountNumber();
     window.addEventListener('resize', positionAccountNumber);
     window.addEventListener('load', positionAccountNumber);
+
+    // Page-specific: Withdraw logic
+    (function initWithdrawPage() {
+        const withdrawPage = document.querySelector('.withdraw-page');
+        if (!withdrawPage) return;
+
+        // Conversion: 1 Adspoint = 0.5 Naira
+        const RATE = 0.5;
+        const adspointInput = document.getElementById('adspoint-input');
+        const nairaValue = document.getElementById('naira-value');
+        const withdrawBtn = document.getElementById('withdraw-btn');
+
+        function updateConversion() {
+            const pts = parseFloat(adspointInput.value || '0');
+            const naira = Math.max(0, pts * RATE);
+            nairaValue.textContent = naira.toLocaleString();
+            withdrawBtn.disabled = !(pts > 0);
+        }
+
+        adspointInput && adspointInput.addEventListener('input', updateConversion);
+        updateConversion();
+
+        // Simple in-memory bank manager with localStorage persistence
+        const bankList = document.getElementById('bank-list');
+        const addBankBtn = document.getElementById('add-bank-btn');
+        const addForm = document.getElementById('add-bank-form');
+        const cancelAddBank = document.getElementById('cancel-add-bank');
+        const saveBank = document.getElementById('save-bank');
+        const bankNameEl = document.getElementById('bank-name');
+        const accountNameEl = document.getElementById('account-name');
+        const accountNumberEl = document.getElementById('account-number');
+
+        const STORAGE_KEY = 'adsearns_banks';
+        function loadBanks() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+            catch { return []; }
+        }
+        function saveBanks(banks) { localStorage.setItem(STORAGE_KEY, JSON.stringify(banks)); }
+
+        function renderBanks() {
+            const banks = loadBanks();
+            bankList.innerHTML = '';
+            if (!banks.length) {
+                const empty = document.createElement('div');
+                empty.className = 'hint';
+                empty.textContent = 'No bank added yet. Add a bank to withdraw.';
+                bankList.appendChild(empty);
+                return;
+            }
+            banks.forEach((b, idx) => {
+                const row = document.createElement('div');
+                row.className = 'bank-item';
+                row.innerHTML = `
+                    <div class="radio">
+                        <input type="radio" name="bank" ${b.selected ? 'checked' : ''} />
+                    </div>
+                    <div class="bank-meta">
+                        <div class="bank-name">${b.bankName} - ${b.accountName}</div>
+                        <div class="bank-number">${b.accountNumber}</div>
+                    </div>
+                    <button class="btn bank-remove" title="Remove"><i class="fas fa-trash"></i></button>
+                `;
+                // select
+                const radio = row.querySelector('input[type="radio"]');
+                radio.addEventListener('change', () => {
+                    const all = loadBanks().map((x, i) => ({...x, selected: i === idx}));
+                    saveBanks(all); renderBanks();
+                });
+                // remove
+                const removeBtn = row.querySelector('.bank-remove');
+                removeBtn.addEventListener('click', () => {
+                    const all = loadBanks();
+                    all.splice(idx, 1);
+                    saveBanks(all); renderBanks();
+                });
+                bankList.appendChild(row);
+            });
+        }
+
+        function toggleAddForm(show) {
+            addForm.style.display = show ? 'block' : 'none';
+        }
+
+        addBankBtn && addBankBtn.addEventListener('click', () => toggleAddForm(true));
+        cancelAddBank && cancelAddBank.addEventListener('click', () => toggleAddForm(false));
+        saveBank && saveBank.addEventListener('click', () => {
+            const bankName = (bankNameEl.value || '').trim();
+            const accountName = (accountNameEl.value || '').trim();
+            const accountNumber = (accountNumberEl.value || '').trim();
+            if (!bankName || !accountName || !accountNumber) {
+                alert('Please fill in all bank details.');
+                return;
+            }
+            const banks = loadBanks();
+            banks.push({ bankName, accountName, accountNumber, selected: !banks.length });
+            saveBanks(banks);
+            bankNameEl.value = accountNameEl.value = accountNumberEl.value = '';
+            toggleAddForm(false);
+            renderBanks();
+        });
+
+        renderBanks();
+
+        // ===== Withdraw history =====
+        const TX_STORAGE = 'adsearns_withdrawals';
+        const FEE_PTS = 100;
+        const historyList = document.getElementById('history-list');
+        const seeAllBtn = document.getElementById('see-all-history');
+        const modal = document.getElementById('history-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalOverlay = modal ? modal.querySelector('.modal-overlay') : null;
+
+        function loadTxs() {
+            try { return JSON.parse(localStorage.getItem(TX_STORAGE)) || []; }
+            catch { return []; }
+        }
+        function saveTxs(txs) { localStorage.setItem(TX_STORAGE, JSON.stringify(txs)); }
+        function seedTxsIfEmpty() {
+            const now = Date.now();
+            const txs = loadTxs();
+            if (txs.length) return;
+            const banks = loadBanks();
+            const sampleBank = banks.find(b => b.selected) || { bankName: 'Access Bank', accountName: 'Adeyemi Adele', accountNumber: '0123456789' };
+            const samples = [
+                { id: `AD${now-86400000}`, points: 2500, status: 'complete', bank: sampleBank, createdAt: now-86400000 },
+                { id: `AD${now-43200000}`, points: 1500, status: 'submitted', bank: sampleBank, createdAt: now-43200000 },
+                { id: `AD${now-21600000}`, points: 900, status: 'requested', bank: sampleBank, createdAt: now-21600000 },
+            ];
+            saveTxs(samples);
+        }
+
+        function formatDate(ts) {
+            const d = new Date(ts);
+            return d.toLocaleString();
+        }
+
+        let showAllHistory = false;
+        function renderHistory() {
+            seedTxsIfEmpty();
+            const txs = loadTxs().sort((a,b)=>b.createdAt-a.createdAt);
+            const toShow = showAllHistory ? txs : txs.slice(0,2);
+            historyList.innerHTML = '';
+            if (!toShow.length) {
+                const empty = document.createElement('div');
+                empty.className = 'hint';
+                empty.textContent = 'No transactions yet.';
+                historyList.appendChild(empty);
+                return;
+            }
+            toShow.forEach(tx => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                const naira = tx.points * RATE;
+                item.innerHTML = `
+                    <div class="meta">
+                        <div class="title">${tx.id}</div>
+                        <div class="sub">${tx.status} • ${formatDate(tx.createdAt)}</div>
+                    </div>
+                    <div class="amount">${tx.points.toLocaleString()} pts (₦${naira.toLocaleString()})</div>
+                `;
+                item.addEventListener('click', () => openHistoryModal(tx));
+                historyList.appendChild(item);
+            });
+            if (seeAllBtn) seeAllBtn.textContent = showAllHistory ? 'See less' : 'See all';
+        }
+
+        function setStepActive(status) {
+            if (!modal) return;
+            const steps = Array.from(modal.querySelectorAll('.step'));
+            const order = ['requested','submitted','complete'];
+            const activeIndex = order.indexOf(status);
+            steps.forEach((el, idx) => {
+                if (idx <= activeIndex) el.classList.add('active');
+                else el.classList.remove('active');
+            });
+        }
+
+        function openHistoryModal(tx) {
+            if (!modal) return;
+            // Set steps
+            setStepActive(tx.status);
+            // Amounts
+            const amountPts = tx.points;
+            const feePts = FEE_PTS;
+            const totalPts = Math.max(0, amountPts - feePts);
+            modal.querySelector('#modal-amount-pts').textContent = `${amountPts.toLocaleString()} pts (₦${(amountPts*RATE).toLocaleString()})`;
+            modal.querySelector('#modal-fee-pts').textContent = `${feePts.toLocaleString()} pts (₦${(feePts*RATE).toLocaleString()})`;
+            modal.querySelector('#modal-total-pts').textContent = `${totalPts.toLocaleString()} pts (₦${(totalPts*RATE).toLocaleString()})`;
+            // Details
+            modal.querySelector('#modal-txid').textContent = tx.id;
+            modal.querySelector('#modal-account').textContent = `${tx.bank.accountName} • ${tx.bank.accountNumber}`;
+            modal.querySelector('#modal-bank').textContent = tx.bank.bankName;
+            modal.querySelector('#modal-date').textContent = formatDate(tx.createdAt);
+            // Copy
+            const copyBtn = modal.querySelector('#tx-copy');
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(tx.id).then(()=>{
+                    copyBtn.textContent = 'Copied';
+                    setTimeout(()=>copyBtn.textContent='Copy', 1200);
+                }).catch(()=>alert('Copy failed'));
+            };
+            // Report issue
+            const reportBtn = modal.querySelector('#report-issue');
+            reportBtn.onclick = () => {
+                const subject = encodeURIComponent(`Withdraw issue - ${tx.id}`);
+                const body = encodeURIComponent(`Hi Support,%0D%0A%0D%0AI'd like to report an issue with my withdrawal.%0D%0A%0D%0ATransaction ID: ${tx.id}%0D%0AStatus: ${tx.status}%0D%0ARequested at: ${formatDate(tx.createdAt)}%0D%0AAmount: ${amountPts.toLocaleString()} pts (₦${(amountPts*RATE).toLocaleString()})%0D%0AFee: ${FEE_PTS.toLocaleString()} pts (₦${(FEE_PTS*RATE).toLocaleString()})%0D%0ATotal: ${totalPts.toLocaleString()} pts (₦${(totalPts*RATE).toLocaleString()})%0D%0AAccount: ${tx.bank.accountName} • ${tx.bank.accountNumber}%0D%0ABank: ${tx.bank.bankName}%0D%0A%0D%0ADescription of the issue:%0D%0A`);
+                window.location.href = `mailto:support@adsearns.example?subject=${subject}&body=${body}`;
+            };
+            // Show
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden','false');
+        }
+        function closeHistoryModal() {
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden','true');
+        }
+        modalClose && modalClose.addEventListener('click', closeHistoryModal);
+        modalOverlay && modalOverlay.addEventListener('click', closeHistoryModal);
+        seeAllBtn && seeAllBtn.addEventListener('click', () => { showAllHistory = !showAllHistory; renderHistory(); });
+
+        renderHistory();
+
+        // Withdraw button behavior: create transaction and refresh history
+        withdrawBtn && withdrawBtn.addEventListener('click', () => {
+            const pts = parseFloat(adspointInput.value || '0');
+            if (!(pts > 0)) return;
+            const banks = loadBanks();
+            const selected = banks.find(b => b.selected);
+            if (!selected) { alert('Please select a bank first.'); return; }
+            const txs = loadTxs();
+            const id = `AD${Date.now()}`;
+            const tx = { id, points: Math.floor(pts), status: 'requested', bank: selected, createdAt: Date.now() };
+            txs.push(tx);
+            saveTxs(txs);
+            adspointInput.value = '';
+            updateConversion();
+            renderHistory();
+            openHistoryModal(tx);
+        });
+    })();
 
     console.log('ADSEARNS Dashboard loaded successfully!');
 });
