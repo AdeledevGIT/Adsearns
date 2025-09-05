@@ -73,7 +73,6 @@ body {
 .logo-section {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
     top: 50%;
     transform: translate(-50%, -50%);
 }
@@ -699,7 +698,7 @@ html[data-theme='light'] .header,
 html[data-theme='light'] .bottom-nav { background:#ffffff !important; }
 
 /* Balance card and text */
-html[data-theme='light'] .balance-card { background:#ffffff !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important, 0 0 0 1px rgba(0,0,0,0.06) !important; }
+html[data-theme='light'] .balance-card { background:#ffffff !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.06) !important; }
 html[data-theme='light'] .balance-label { color:#333 !important; }
 html[data-theme='light'] .balance-amount { color:#111 !important; }
 html[data-theme='light'] .name-label { color:#555 !important; }

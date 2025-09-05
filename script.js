@@ -9,8 +9,21 @@
       const link = document.querySelector("link[rel='manifest']");
       if (!link) return;
       const isLight = theme === 'light';
-      const href = isLight ? 'manifest-light.json' : 'manifest.json';
+      const base = isLight ? 'manifest-light.json' : 'manifest.json';
+      const href = `${base}?v=${theme}`; // cache-bust per theme
       if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+    } catch(e) {}
+  }
+  function setThemeColorMeta(theme){
+    try {
+      const color = theme === 'light' ? '#FFFFFF' : '#221F1F';
+      let meta = document.querySelector("meta[name='theme-color']");
+      if (!meta) {
+        meta = document.createElement('meta');
+        meta.setAttribute('name','theme-color');
+        document.head.appendChild(meta);
+      }
+      meta.setAttribute('content', color);
     } catch(e) {}
   }
   function apply(mode){
@@ -18,6 +31,7 @@
     const eff=compute(mode);
     setThemeAttr(eff);
     setManifest(eff);
+    setThemeColorMeta(eff);
   }
   // initial apply as early as possible to minimize FOUC
   try {
@@ -25,7 +39,7 @@
     const eff=compute(saved);
     setThemeAttr(eff);
     // defer manifest swap until DOM is ready if link may not be present yet
-    document.addEventListener('DOMContentLoaded', ()=> setManifest(eff));
+    document.addEventListener('DOMContentLoaded', ()=> { setManifest(eff); setThemeColorMeta(eff); });
   } catch(e) {}
   function setActive(mode){
     try {
@@ -50,6 +64,7 @@
         const eff=compute('system');
         setThemeAttr(eff);
         setManifest(eff);
+        setThemeColorMeta(eff);
       }
     };
     if (mq.addEventListener) mq.addEventListener('change', onSystemChange);
