@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADSEARNS - Sign up</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    .card { background-color: #000000; color: #ed8e1c; border-radius: 15px; width: 90%; margin: 12px auto; padding: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
+    .page-tag { margin-left: 8px; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; opacity: .9; }
+    .auth-subtitle { margin: 4px 0 10px; opacity: .85; font-size: 12px; color: #fff; }
+
+    .info-form { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .info-field label { font-size: 12px; opacity: .85; display: block; margin-bottom: 6px; }
+    .info-field input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: #fff; outline: none; }
+    .info-field input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; text-decoration: none; font-weight: 700; font-size: 12px; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .btn.primary { width: 100%; justify-content: center; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); box-shadow: 0 6px 18px rgba(76,175,80,0.35); border-color: transparent; }
+
+    .hint { font-size: 11px; opacity: .8; }
+    .row { display:flex; align-items:center; justify-content: space-between; gap:8px; }
+    .muted-link { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 700; }
+
+    @media (min-width: 768px) { .card { max-width: 560px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="profile-section">
+        <span class="page-tag">Sign up</span>
+      </div>
+      <button class="switch-btn">Switch to advertise</button>
+    </header>
+
+    <div class="card">
+      <h3 class="section-title">Create your account</h3>
+      <div class="auth-subtitle">Join ADSEARNS and start earning in minutes.</div>
+      <form id="signup-form" class="info-form" onsubmit="return false;">
+        <div class="info-field">
+          <label for="su-username">Username</label>
+          <input id="su-username" type="text" placeholder="e.g., adeyemi" required />
+        </div>
+        <div class="info-field">
+          <label for="su-fullname">Full name</label>
+          <input id="su-fullname" type="text" placeholder="e.g., Adeyemi Adele" required />
+        </div>
+        <div class="info-field">
+          <label for="su-email">Email</label>
+          <input id="su-email" type="email" placeholder="e.g., you@example.com" required />
+        </div>
+        <div class="info-field">
+          <label for="su-password">Password</label>
+          <input id="su-password" type="password" placeholder="Create a password" required />
+        </div>
+        <div class="info-field">
+          <label for="su-password2">Confirm password</label>
+          <input id="su-password2" type="password" placeholder="Re-enter password" required />
+        </div>
+        <button id="signup-submit" class="btn primary" type="submit"><i class="fas fa-user-plus"></i> Sign up</button>
+        <div class="row">
+          <div class="hint">By signing up, you agree to our Terms & Privacy.</div>
+          <a class="muted-link" href="sign-in.html">Have an account? Sign in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+  (function(){
+    const USERS_KEY = 'adsearns_users';
+    const CURRENT_KEY = 'adsearns_current_user';
+    function loadUsers(){ try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch { return []; } }
+    function saveUsers(u){ localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+    function setCurrent(user){ localStorage.setItem(CURRENT_KEY, JSON.stringify(user)); }
+
+    const form = document.getElementById('signup-form');
+    const username = document.getElementById('su-username');
+    const fullname = document.getElementById('su-fullname');
+    const email = document.getElementById('su-email');
+    const password = document.getElementById('su-password');
+    const password2 = document.getElementById('su-password2');
+
+    form && form.addEventListener('submit', () => {
+      const u = (username.value||'').trim();
+      const f = (fullname.value||'').trim();
+      const e = (email.value||'').trim().toLowerCase();
+      const p1 = password.value||'';
+      const p2 = password2.value||'';
+      if (!u || !f || !e || !p1 || !p2){ alert('Please fill all fields.'); return; }
+      if (p1.length < 6){ alert('Password should be at least 6 characters.'); return; }
+      if (p1 !== p2){ alert('Passwords do not match.'); return; }
+      const users = loadUsers();
+      if (users.some(x => x.username.toLowerCase() === u.toLowerCase())){ alert('Username already taken.'); return; }
+      if (users.some(x => (x.email||'').toLowerCase() === e)){ alert('Email already registered.'); return; }
+      const user = { username: u, fullname: f, email: e, password: p1, createdAt: Date.now() };
+      users.push(user); saveUsers(users); setCurrent({ username: u, fullname: f, email: e });
+      alert('Account created. Welcome to ADSEARNS!');
+      window.location.href = 'index.html';
+    });
+  })();
+  </script>
+</body>
+</html>

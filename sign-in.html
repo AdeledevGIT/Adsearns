@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADSEARNS - Sign in</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    .card { background-color: #000000; color: #ed8e1c; border-radius: 15px; width: 90%; margin: 12px auto; padding: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; opacity: .9; margin-bottom: 12px; }
+    .page-tag { margin-left: 8px; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #fff; opacity: .9; }
+    .auth-subtitle { margin: 4px 0 10px; opacity: .85; font-size: 12px; color: #fff; }
+
+    .info-form { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .info-field label { font-size: 12px; opacity: .85; display: block; margin-bottom: 6px; }
+    .info-field input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: #fff; outline: none; }
+    .info-field input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); color: #fff; cursor: pointer; text-decoration: none; font-weight: 700; font-size: 12px; }
+    .btn:hover { background: rgba(255,255,255,0.12); }
+    .btn.primary { width: 100%; justify-content: center; background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); box-shadow: 0 6px 18px rgba(76,175,80,0.35); border-color: transparent; }
+
+    .hint { font-size: 11px; opacity: .8; }
+    .row { display:flex; align-items:center; justify-content: space-between; gap:8px; }
+    .muted-link { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 700; }
+
+    @media (min-width: 768px) { .card { max-width: 560px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="header">
+      <div class="profile-section">
+        <span class="page-tag">Sign in</span>
+      </div>
+      <button class="switch-btn">Switch to advertise</button>
+    </header>
+
+    <div class="card">
+      <h3 class="section-title">Welcome back</h3>
+      <div class="auth-subtitle">Sign in to continue earning with ADSEARNS.</div>
+      <form id="signin-form" class="info-form" onsubmit="return false;">
+        <div class="info-field">
+          <label for="si-username">Username or email</label>
+          <input id="si-username" type="text" placeholder="e.g., adeyemi or you@example.com" required />
+        </div>
+        <div class="info-field">
+          <label for="si-password">Password</label>
+          <input id="si-password" type="password" placeholder="Your password" required />
+        </div>
+        <button id="signin-submit" class="btn primary" type="submit"><i class="fas fa-sign-in-alt"></i> Sign in</button>
+        <div class="row">
+          <div class="hint">Forgot password? Reset coming soon.</div>
+          <a class="muted-link" href="sign-up.html">New here? Create account</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+  (function(){
+    const USERS_KEY = 'adsearns_users';
+    const CURRENT_KEY = 'adsearns_current_user';
+    function loadUsers(){ try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch { return []; } }
+    function setCurrent(user){ localStorage.setItem(CURRENT_KEY, JSON.stringify(user)); }
+
+    const form = document.getElementById('signin-form');
+    const id = document.getElementById('si-username');
+    const password = document.getElementById('si-password');
+
+    form && form.addEventListener('submit', () => {
+      const ident = (id.value||'').trim().toLowerCase();
+      const pass = password.value||'';
+      if (!ident || !pass){ alert('Please enter your credentials.'); return; }
+      const users = loadUsers();
+      const user = users.find(u => u.username.toLowerCase() === ident || (u.email||'').toLowerCase() === ident);
+      if (!user || user.password !== pass){ alert('Invalid credentials.'); return; }
+      setCurrent({ username: user.username, fullname: user.fullname, email: user.email });
+      alert('Signed in successfully.');
+      window.location.href = 'index.html';
+    });
+  })();
+  </script>
+</body>
+</html>
