@@ -641,6 +641,15 @@ body {
     .account-number { left: 42px; }
 }
 
+/* Forms polish */
+.info-form input { transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; font-size: 16px; }
+.info-form select, .info-form textarea { font-size: 16px; }
+.info-form input:focus { border-color: rgba(76,175,80,0.65); box-shadow: 0 0 0 3px rgba(76,175,80,0.18); }
+.muted-link { color: rgba(255,255,255,0.9); }
+.muted-link:hover { text-decoration: underline; }
+/* Prevent iOS zoom on auth inputs */
+.auth-form .info-field input { font-size: 16px !important; }
+
 /* Ensure the layout stays consistent across all screen sizes */
 @media (max-width: 767px) {
     .container {
@@ -741,3 +750,10 @@ html[data-theme='light'] .modal-content { background:#ffffff !important; border-
 html[data-theme='light'] .modal-body .card.sub { background: rgba(0,0,0,0.04) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
 html[data-theme='light'] .history-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
 html[data-theme='light'] .bank-item { background: rgba(0,0,0,0.05) !important; border-color: rgba(0,0,0,0.1) !important; color:#111 !important; }
+
+/* Auth buttons spacing */
+.auth-sheet .btn.primary { margin-top: 12px; }
+/* Auth pages readability */
+html[data-theme='light'] .auth-subtitle { color:#222 !important; opacity: .95 !important; }
+html[data-theme='light'] .muted-link { color:#1a1a1a !important; }
+html[data-theme='light'] .hint { color:#444 !important; }
